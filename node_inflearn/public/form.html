@@ -12,21 +12,30 @@
 
     <button class="ajaxsend">ajaxsend</button>
 
+    <div class="result"></div>
+
     <script>
+      //html중에서 클래스가 ajaxsend라는걸 클릭했을 때 데이터를 가지고 특정 함수 실행
       document.querySelector(".ajaxsend").addEventListener("click", function() {
         var inputdata = document.forms[0].elements[0].value;
-        sendAjax("http://127.0.0.1:3000/ajax_send_email");
+        sendAjax("http://localhost:3000/ajax_send_email", inputdata);
       });
 
+      //post 보내는 함수
       function sendAjax(url, data) {
         var data = { email: data };
         data = JSON.stringify(data);
+
         var xhr = new XMLHttpRequest();
         xhr.open("POST", url);
-        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("Content-Type", "application/json"); //post할 때 데이터의 타입은 json을 헤더에 명시함.
+
         xhr.send(data);
         xhr.addEventListener("load", function() {
           console.log(xhr.responseText);
+          var result = JSON.parse(xhr.responseText);
+          if (result.result !== "ok") return;
+          document.querySelector(".result").innerHTML = result.email;
         });
       }
     </script>

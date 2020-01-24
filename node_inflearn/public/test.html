@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>테스트 페이지</title>
+  </head>
+  <body>
+    <form action="/post_test" method="post">
+      이름 : <input type="text" name="name" /><br />
+      이메일 : <input type="text" name="email" /><br />
+      <input type="submit" />
+    </form>
+
+    <button class="send">
+      Ajax로 이름과 이메일 보내기
+    </button>
+    <br />
+    <h1>결과</h1>
+    <div class="result_name"></div>
+    <div class="result_email"></div>
+  </body>
+
+  <script>
+    document.querySelector(".send").addEventListener("click", () => {
+      var _name = document.forms[0].elements[0].value;
+      var _email = document.forms[0].elements[1].value;
+      userAjaxToSend("/ajax_test", _name, _email);
+    });
+
+    function userAjaxToSend(_url, _name, _email) {
+      var data = { name: _name, email: _email };
+      data = JSON.stringify(data);
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", _url);
+      xhr.setRequestHeader("Content-Type", "application/json");
+
+      xhr.send(data);
+      xhr.addEventListener("load", () => {
+        console.log(xhr.responseText);
+
+        var result = JSON.parse(xhr.responseText);
+        document.querySelector(".result_name").innerHTML = result.name;
+        document.querySelector(".result_email").innerHTML = result.email;
+      });
+    }
+  </script>
+</html>
