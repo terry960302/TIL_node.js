@@ -29,13 +29,14 @@
         var xhr = new XMLHttpRequest();
         xhr.open("POST", url);
         xhr.setRequestHeader("Content-Type", "application/json"); //post할 때 데이터의 타입은 json을 헤더에 명시함.
-
         xhr.send(data);
+
         xhr.addEventListener("load", function() {
-          console.log(xhr.responseText);
           var result = JSON.parse(xhr.responseText);
-          if (result.result !== "ok") return;
-          document.querySelector(".result").innerHTML = result.email;
+          var resultDiv = document.querySelector(".result");
+          if (result.result !== "ok")
+            resultDiv.innerHTML = "Your email is not found";
+          else resultDiv.innerHTML = result.name;
         });
       }
     </script>
