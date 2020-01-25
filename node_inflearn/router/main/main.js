@@ -3,7 +3,8 @@ var path = require("path");
 var router = express.Router();
 
 router.get("/", function(req, res) {
-  var id = req.user;
+  var id = req.user.id;
+  console.log("main is loaded", id);
   res.render("main.ejs", { id: id });
 });
 

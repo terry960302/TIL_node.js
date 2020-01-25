@@ -3,8 +3,8 @@ const router = express.Router();
 const mysql = require("mysql");
 const path = require("path");
 const bodyParser = require("body-parser");
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
+const passport = require("passport"),
+  LocalStrategy = require("passport-local").Strategy;
 
 //mysql 데이터베이스 연동
 var connection = mysql.createConnection({
@@ -30,7 +30,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((id, done) => {
   console.log("passport session get id: ", id);
-  done(null, id);
+  done(null, { id: id });
 });
 
 passport.use(
