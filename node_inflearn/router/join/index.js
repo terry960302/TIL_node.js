@@ -17,7 +17,20 @@ var connection = mysql.createConnection({
 connection.connect();
 
 router.get("/", function(req, res) {
-  res.render("join.ejs");
+  var msg;
+  var errMsg = req.flash("error");
+  if (errMsg) msg = errMsg;
+  res.render("join.ejs", { message: msg });
+});
+
+passport.serializeUser((user, done) => {
+  console.log("passport session save , id : ", user.id);
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  console.log("passport session get id: ", id);
+  done(null, id);
 });
 
 passport.use(
@@ -29,7 +42,28 @@ passport.use(
       passReqToCallback: true
     },
     (req, email, password, done) => {
-      console.log("local-join callback called");
+      var query = connection.query(
+        "select * from user where email=?",
+        [email],
+        (err, rows) => {
+          if (err) return done(err);
+
+          if (rows.length) {
+            console.log("existed user");
+            return done(null, false, { message: "your email is already used" });
+          } else {
+            var sql = { email: email, pw: password };
+            var query = connection.query(
+              "insert into user set ?",
+              sql,
+              (err, rows) => {
+                if (err) throw err;
+                return done(null, { email: email, id: rows.insertId });
+              }
+            );
+          }
+        }
+      );
     }
   )
 );

@@ -5,10 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Join !</title>
+
+    <style>
+      .messages {
+        color: red;
+        margin: 1rem;
+      }
+    </style>
   </head>
   <body>
     <h1>Join my WebSite!(Ejs)</h1>
-    <section class="messages"></section>
+    <section class="messages"><%= message %></section>
     <form action="/join" method="post">
       email : <input type="text" name="email" /><br />
       password : <input type="password" name="password" /><br />
