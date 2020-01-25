@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- 참고 : https://www.youtube.com/watch?v=X9Eh7_FUYzw -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>로그인</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: url(bg.jpg) no-repeat center;
+        background-size: cover;
+        font-family: sans-serif;
+      }
+      .login-wrapper {
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .form {
+        position: relative;
+        width: 100%;
+        max-width: 380px;
+        padding: 80px 40px 40px;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
+        color: #fff;
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
+      }
+      .from::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 50%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        transform: skew(-26deg);
+        transform-origin: bottom left;
+        pointer-events: none;
+      }
+      .form img {
+        position: absolute;
+        top: -40px;
+        left: 40%;
+        right: 40%;
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+      }
+
+      .form h2 {
+        text-align: center;
+        letter-spacing: 1px;
+        margin-bottom: 2rem;
+        color: #ffe1d9;
+      }
+      .form .input-group {
+        position: relative;
+      }
+
+      .form .input-group input {
+        width: 100%;
+        padding: 10px 0;
+        font-size: 1rem;
+        letter-spacing: 1px;
+        margin-bottom: 30px;
+        border: none;
+        border-bottom: 1px solid #fff;
+        outline: none;
+        background-color: transparent;
+        color: inherit;
+      }
+
+      .form .input-group label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 10px 0;
+        font-size: 1rem;
+        pointer-events: none;
+        transition: 0.3s ease-out;
+      }
+
+      .form .input-group input:focus + label,
+      .form .input-group input:valid + label {
+        transform: translateY(-18px);
+        color: #ffe1d9;
+        font-size: 0.8rem;
+      }
+
+      .submit-btn {
+        display: block;
+        margin-left: auto;
+        border: none;
+        outline: none;
+        background: #ffe1d9;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .sign_up {
+        color: inherit;
+      }
+
+      #sign_up {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 0;
+        z-index: 1;
+        background: #fff;
+        opacity: 0;
+        transition: 0.6s;
+      }
+
+      #sign_up:target {
+        height: 100%;
+        opacity: 1;
+      }
+
+      .close {
+        position: absolute;
+        right: 1.5rem;
+        top: 0.5rem;
+        font-size: 2rem;
+        font-weight: 900;
+        text-decoration: none;
+        color: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-wrapper">
+      <form class="form" action="">
+        <img src="the_ritier_logo1.png" alt="" />
+        <h2>LOGIN</h2>
+        <div class="input-group">
+          <input type="email" name="signIn_email" id="signIn_email" required />
+          <label for="signIn_email">EMAIL</label>
+        </div>
+
+        <div class="input-group">
+          <input type="password" name="signIn_password" required />
+          <label for="signIn_password">PASSWORD</label>
+        </div>
+
+        <input type="submit" value="SIGN IN" class="submit-btn" />
+        <a href="#sign_up" class="sign_up">Don't have an account?</a>
+      </form>
+
+      <div id="sign_up">
+        <form action="/auth/sign_up" class="form" method="post">
+          <a href="#" class="close">&times;</a>
+          <h2>SIGN UP</h2>
+          <div class="input-group">
+            <input
+              type="email"
+              name="signUp_email"
+              id="signUp_email"
+              required
+            />
+            <label for="signUp_email">Email</label>
+          </div>
+          <div class="input-group">
+            <input
+              type="password"
+              name="signUp_password"
+              id="signUp_password"
+              required
+            />
+            <label for="signUp_password">Password</label>
+          </div>
+          <input type="submit" value="SIGN UP" class="submit-btn" />
+
+          <p><%= message %></p>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      //   ajax 처리(클라이언트 데이터 이동)
+      document
+        .querySelector(".signUp_email")
+        .addEventListener("click", function() {
+          const email = document.getElementsByName("signUp_email")[0].value;
+          const password = document.getElementsByName("signUp_password")[0]
+            .value;
+          sendAjax("https://localhost:3000/auth", {
+            email: email,
+            password: password
+          });
+        });
+
+      function sendAjax(_url, _data) {
+        _data = JSON.stringify(_data);
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", _data);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(_data);
+
+        xhr.addEventListener("load", function() {
+          const result = JSON.parse(xhr.responseText);
+          console.log(result);
+        });
+      }
+    </script>
+  </body>
+</html>
