@@ -6,6 +6,8 @@ const main = require("./main/main");
 const email = require("./email/email");
 const myTest = require("./test/my_test");
 const join = require("./join/index");
+const login = require("./login/index");
+const logout = require("./logout/index");
 
 //루트
 router.get("/", (req, res) => {
@@ -17,5 +19,7 @@ router.use("/main", main);
 router.use("/email", email);
 router.use("/my_test", myTest);
 router.use("/join", join);
+router.use("/login", login);
+router.use("/logout", logout);
 
 module.exports = router;

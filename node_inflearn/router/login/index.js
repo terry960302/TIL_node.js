@@ -20,7 +20,7 @@ router.get("/", function(req, res) {
   var msg;
   var errMsg = req.flash("error");
   if (errMsg) msg = errMsg;
-  res.render("join.ejs", { message: msg });
+  res.render("login.ejs", { message: msg });
 });
 
 passport.serializeUser((user, done) => {
@@ -34,7 +34,7 @@ passport.deserializeUser((id, done) => {
 });
 
 passport.use(
-  "local-join",
+  "local-login",
   new LocalStrategy(
     {
       usernameField: "email",
@@ -47,20 +47,14 @@ passport.use(
         [email],
         (err, rows) => {
           if (err) return done(err);
-
+          //디비에 같은 이메일이 있을 경우(회원일 경우)
           if (rows.length) {
-            console.log("existed user");
-            return done(null, false, { message: "your email is already used" });
-          } else {
-            var sql = { email: email, pw: password };
-            var query = connection.query(
-              "insert into user set ?",
-              sql,
-              (err, rows) => {
-                if (err) throw err;
-                return done(null, { email: email, id: rows.insertId });
-              }
-            );
+            console.log(rows);
+            return done(null, { email: email, id: rows[0].UID });
+          }
+          //새로운 사람이 로그인할 경우
+          else {
+            return done(null, false, { message: "Login Info is not found!" });
           }
         }
       );
@@ -68,29 +62,16 @@ passport.use(
   )
 );
 
-router.post(
-  "/",
-  passport.authenticate("local-join", {
-    successRedirect: "/main",
-    failureRedirect: "/join",
-    failureFlash: true
-  })
-);
-
-// router.post("/", (req, res) => {
-//   var body = req.body;
-//   var email = body.email;
-//   var name = body.name;
-//   var passwd = body.password;
-
-//   //회원 디비에 추가
-//   var sql = { email: email, name: name, pw: passwd };
-//   var query = connection.query("insert into user set ?", sql, (err, rows) => {
-//     if (err) {
-//       throw err;
-//     }
-//     console.log("잘했어요 : ", rows.insertId, name);
-//     res.render("welcome.ejs", { name: name, id: rows.insertId });
-//   });
-// });
+router.post("/", (req, res, next) => {
+  passport.authenticate("local-login", (err, user, info) => {
+    if (err) res.status(500).json(err);
+    if (!user) {
+      return res.status(401).json(info.message);
+    }
+    req.logIn(user, function(err) {
+      if (err) return next(err);
+      return res.json(user);
+    });
+  })(req, res, next);
+});
 module.exports = router;
