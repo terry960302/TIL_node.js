@@ -99,7 +99,21 @@
         font-size: 0.8rem;
       }
 
-      .submit-btn {
+      .submit-btn-sign-in {
+        display: block;
+        margin-left: auto;
+        border: none;
+        outline: none;
+        background: #ffe1d9;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .submit-btn-sigin-up {
         display: block;
         margin-left: auto;
         border: none;
@@ -163,7 +177,7 @@
           <label for="signIn_password">PASSWORD</label>
         </div>
 
-        <input type="submit" value="SIGN IN" class="submit-btn" />
+        <input type="submit" value="SIGN IN" class="submit-btn-sign-in" />
         <a href="#sign_up" class="sign_up">Don't have an account?</a>
       </form>
 
@@ -189,17 +203,17 @@
             />
             <label for="signUp_password">Password</label>
           </div>
-          <input type="submit" value="SIGN UP" class="submit-btn" />
+          <input type="submit" value="SIGN UP" class="submit-btn-sigin-up" />
 
           <p><%= message %></p>
         </form>
       </div>
     </div>
 
-    <script>
-      //   ajax 처리(클라이언트 데이터 이동)
+    <!-- <script>
+      // Ajax 처리(클라이언트 데이터 이동)
       document
-        .querySelector(".signUp_email")
+        .querySelector(".submit-btn-sigin-up")
         .addEventListener("click", function() {
           const email = document.getElementsByName("signUp_email")[0].value;
           const password = document.getElementsByName("signUp_password")[0]
@@ -222,6 +236,6 @@
           console.log(result);
         });
       }
-    </script>
+    </script> -->
   </body>
 </html>

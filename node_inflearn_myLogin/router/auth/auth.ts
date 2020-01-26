@@ -5,7 +5,7 @@ import passport from "passport";
 import passportLocal from "passport-local";
 const LocalStrategy: typeof passportLocal.Strategy = passportLocal.Strategy;
 
-//데이터베이스 세팅
+//mysql setting
 const connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
@@ -15,32 +15,44 @@ const connection = mysql.createConnection({
 });
 connection.connect();
 
-//로그인 화면
+//login screen rendering
 router.get("/", function(req, res) {
   var _msg: string = req.body.message;
   res.render("login.ejs", { message: _msg });
 });
 
-//패스포트 직렬화
+//form submit to here
+router.post("/sign_up", function(req, res) {
+  console.log("You clicked form submit!", req.body);
+  passport.authenticate("sign-up", {
+    successRedirect: "/auth",
+    failureRedirect: "/auth#sign_up",
+    failureFlash: true
+  });
+});
+
+//passport
 passport.serializeUser(function(user: any, done) {
+  console.log("passport serializeUser");
   done(null, user.id);
 });
 
 passport.deserializeUser(function(id, done) {
+  console.log("passport deserializeUser");
   done(null, id);
 });
 
-//회원가입
+//check email using mysql
 passport.use(
   "sign-up",
   new LocalStrategy(
     {
       usernameField: "signUp_email",
       passwordField: "signUp_password",
-      passReqToCallback: false
+      passReqToCallback: true
     },
-    function(email: string, password: string, done) {
-      console.log("이메일 검사를 시작합니다.");
+    function(req: express.Request, email: string, password: string, done: any) {
+      console.log("디비에서 이메일 조회를 시작합니다.", req.body);
       //입력받은 이메일이 디비에 있는지 조회
       const query: mysql.Query = connection.query(
         "select * from user where email=?",
@@ -70,15 +82,5 @@ passport.use(
     }
   )
 );
-
-//회원가입 버튼 누르면 여가로
-router.post("/sign_up", function(req, res) {
-  // res.send(req.body);
-  passport.authenticate("sign-up", {
-    successRedirect: "/auth",
-    failureRedirect: "/auth#sign_up",
-    failureFlash: true
-  });
-});
 
 export = router;
