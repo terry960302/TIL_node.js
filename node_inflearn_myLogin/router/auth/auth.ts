@@ -25,13 +25,13 @@ router.get("/", (req: any, res: any) => {
 
 //세션에 저장
 passport.serializeUser((user: any, done: any) => {
-  console.log("passport session save , id : ", user.id);
+  console.log("세션에 저장되었습니다. => id : ", user.id);
   done(null, user.id);
 });
 
 //저장된 정보 복호화
 passport.deserializeUser((id: any, done: any) => {
-  console.log("passport session get id: ", id);
+  console.log("세션에서 id를 가져옵니다. =>  id: ", id);
   done(null, id);
 });
 
@@ -56,7 +56,7 @@ passport.use(
             return done(null, false, { message: "이미 가입한 회원입니다." });
           } else {
             var sql = { email: email, pw: password };
-            var query = connection.query(
+            const query = connection.query(
               "insert into user set ?",
               sql,
               (err: any, rows: any) => {
@@ -90,11 +90,9 @@ passport.use(
           //디비에 이메일이 존재
           if (rows.length) {
             if (rows[0].pw === password) {
-              //TODO : 로그인 성공
               console.log("로그인에 성공했습니다.");
-              return done(null, false, { email: email, id: rows[0].UID });
+              return done(null, { email: email, id: rows[0].UID });
             } else {
-              //TODO : 이메일은 있는데 비번이 다름
               console.log("비밀번호가 다릅니다.");
               return done(null, false, {
                 message: "비밀번호가 다릅니다."
@@ -129,5 +127,18 @@ router.post(
     failureFlash: true
   })
 );
+
+// router.post("/sign_in", (req, res, next) => {
+//   passport.authenticate("local-sign-in", (err, user, info) => {
+//     if (err) res.status(500).json(err);
+//     if (!user) {
+//       return res.status(401).json(info.message);
+//     }
+//     req.logIn(user, function(err) {
+//       if (err) return next(err);
+//       return res.json(user);
+//     });
+//   })(req, res, next);
+// });
 
 export = router;
