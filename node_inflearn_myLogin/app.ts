@@ -1,8 +1,7 @@
 import express from "express";
 const app = express();
-import * as bodyParser from "body-parser";
+import bodyParser from "body-parser";
 import passport from "passport";
-import * as LocalStrategy from "passport-local";
 import session from "express-session";
 import flash from "connect-flash";
 import router from "./router/index";

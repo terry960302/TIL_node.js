@@ -128,7 +128,8 @@
       }
 
       .sign_up {
-        color: inherit;
+        color: #ffe1d9;
+        font-size: 14px;
       }
 
       #sign_up {
@@ -160,11 +161,19 @@
         text-decoration: none;
         color: inherit;
       }
+
+      .msg,
+      .login_msg {
+        color: red;
+        margin-top: 10px;
+        font-size: 14px;
+      }
     </style>
   </head>
   <body>
     <div class="login-wrapper">
-      <form class="form" action="">
+      <!-- 로그인 -->
+      <form class="form" action="/auth/sign_in" method="post">
         <img src="the_ritier_logo1.png" alt="" />
         <h2>LOGIN</h2>
         <div class="input-group">
@@ -178,9 +187,11 @@
         </div>
 
         <input type="submit" value="SIGN IN" class="submit-btn-sign-in" />
-        <a href="#sign_up" class="sign_up">Don't have an account?</a>
+        <p class="login_msg"><%= message %></p>
+        <a href="#sign_up" class="sign_up">회원가입</a>
       </form>
 
+      <!-- 회원가입 -->
       <div id="sign_up">
         <form action="/auth/sign_up" class="form" method="post">
           <a href="#" class="close">&times;</a>
@@ -205,7 +216,7 @@
           </div>
           <input type="submit" value="SIGN UP" class="submit-btn-sigin-up" />
 
-          <p><%= message %></p>
+          <p class="msg"><%= message %></p>
         </form>
       </div>
     </div>
