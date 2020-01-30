@@ -8,6 +8,7 @@ const myTest = require("./test/my_test");
 const join = require("./join/index");
 const login = require("./login/index");
 const logout = require("./logout/index");
+const movie = require("./movie/index");
 
 //루트
 router.get("/", (req, res) => {
@@ -21,5 +22,6 @@ router.use("/my_test", myTest);
 router.use("/join", join);
 router.use("/login", login);
 router.use("/logout", logout);
+router.use("/movie", movie);
 
 module.exports = router;

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Movie</title>
+  </head>
+  <body>
+    <h1>Movie List</h1>
+
+    <section class="showWrap">
+      <ul>
+        <li class="get_all">
+          <button>모든영화보기</button>
+          <section class="showResult"></section>
+        </li>
+
+        <li class="post">
+          <form action="" method="post">
+            <div>
+              제목 : <input type="text" name="title" placeholder="Terminator" />
+            </div>
+            <div>
+              장르 : <input type="text" name="type" placeholder="drama" />
+            </div>
+            <div>
+              평점 : <input type="text" name="grade" placeholder="8.43" />
+            </div>
+            <div>
+              주연 : <input type="text" name="actor" placeholder="Tom cruise" />
+            </div>
+          </form>
+
+          <button>영화추가</button>
+          <section class="showResult"></section>
+        </li>
+
+        <li class="get_id">
+          <input type="text" name="title" />
+          <button>영화상세정보</button>
+          <section class="showResult"></section>
+        </li>
+
+        <li class="delete_id">
+          <input type="text" name="title" />
+          <button>영화삭제</button>
+          <section class="showResult"></section>
+        </li>
+
+        <li class="update_id">
+          <form action="" method="post">
+            <div>
+              제목 : <input type="text" name="title" placeholder="Terminator" />
+            </div>
+            <div>
+              장르 : <input type="text" name="type" placeholder="drama" />
+            </div>
+            <div>
+              평점 : <input type="text" name="grade" placeholder="8.43" />
+            </div>
+            <div>
+              주연 : <input type="text" name="actor" placeholder="Tom cruise" />
+            </div>
+          </form>
+
+          <button>영화정보갱신</button>
+          <section class="showResult">ㅁㅁ</section>
+        </li>
+
+        <li class="get_min">
+          <button>현재 상영중인영화</button>
+          <section class="showResult">aaa</section>
+        </li>
+      </ul>
+    </section>
+
+    <script>
+      document.querySelector(".showWrap").addEventListener("click", e => {
+        let url, method, data;
+        const target = e.target;
+        const li = target.closest("LI");
+        const showResult = li.querySelector(".showResult");
+        const type = li.className;
+
+        if (target.tagName !== "BUTTON") return;
+
+        switch (type) {
+          case "get_all":
+            url = "/movie";
+            method = "GET";
+            break;
+          case "post":
+            url = "/movie";
+            method = "POST";
+            let inputs = [].slice.call(document.querySelector("form").elements);
+            data = inputs.reduce((pre, next) => {
+              pre[next.name] = next.value;
+              return pre;
+            }, {});
+            break;
+          default:
+            console.log("디폴트");
+            break;
+        }
+
+        sendAjax("https://localhost:3000/movie", method, data, showResult);
+      });
+
+      function sendAjax(url, method, data, resultEle) {
+        const xhr = new XMLHttpRequest();
+        xhr.open(method, url);
+
+        if (data) {
+          data = JSON.stringify(data);
+          xhr.setRequestHeader("Content-Type", "application/json");
+        } else {
+          data = null;
+        }
+
+        //TODO : 여기서 잡히는 에러를 수정해야함
+        xhr.send(data);
+
+        xhr.addEventListener("load", () => {
+          const result = JSON.parse(xhr.responseText);
+
+          if (result.result === 1) {
+            let titles = result.data.reduce((pre, next) => {
+              pre += "<li>" + next.title + "</li>";
+              return pre;
+            }, "");
+            resultEle.innerHTML = "<ul>" + titles + "</ul>";
+          } else {
+            resultEle.innerHTML = "list not found";
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
