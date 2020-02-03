@@ -1,32 +1,31 @@
 const express = require("express");
-var app = express();
 const bodyParser = require("body-parser");
-const router = require("./router/index");
-const passport = require("passport");
-const localStrategy = require("passport-local").Strategy;
-const session = require("express-session");
-const flash = require("connect-flash");
 
-//미들웨어 세팅
-app.use(express.static("public")); // 정적 파일 세팅(주소에 파일이름만 적어도 접근 가능)
+var app = express();
+
+app.use(express.static("public"));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true })); //post데이터 화면에 띄우기 위한 body-parser
-app.set("view engine", "ejs"); // 뷰 엔진(ejs나 pug 등등)
-app.use(
-  session({
-    secret: "keyboard cat",
-    resave: false,
-    saveUninitialized: true
-  })
-);
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(flash());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.set("view engine", "ejs");
 
-//서버 시작
+app.get("/", function(req, res) {
+  res.sendFile(__dirname + "/public/main.html");
+});
+
+app.get("/main", function(req, res) {
+  res.sendFile(__dirname + "/public/main.html");
+});
+
+app.post("/email_post", function(req, res) {
+  console.log(req.body);
+  res.render("email.ejs", { email: req.body.email });
+  //   res.send("<h1> Welcome! </h1>" + req.body.email);
+});
+
+app.post("/ajax_send_email", function(req, res) {
+  console.log(req.body.email);
+});
+
 app.listen(3000, () => {
   console.log("시작합니다. 3000");
 });
-
-//라우팅
-app.use(router);
